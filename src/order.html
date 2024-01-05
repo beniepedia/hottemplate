@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <link rel="stylesheet" href="/build/output.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body class="antialiased md:bg-blue-200 flex justify-center " x-data="order">
+    <div class="bg-slate-100 min-h-screen md:max-w-md md:border-x-2 relative md:border-white w-full">
+        <div class="absolute bg-white h-screen w-full z-10 justify-center items-center flex-col "
+            :class="loading ? 'flex' : 'hidden'">
+            <span class="loading loading-dots loading-lg"></span>
+            <p class="font-semibold mt-4">Please Wait...</p>
+        </div>
+        <div class="h-56 bg-blue-500 rounded-bl-[2.5rem] shadow">
+            <!-- <div class="-space-y-1 bg-green-200 shadow-md px-6 py-2 rounded-r-full">
+                <h1 class="text-2xl font-semibold">HOME NET</h1>
+                <h2>Solusi internet murah asdsad</h2>
+            </div> -->
+            <div class="flex flex-col justify-center items-center h-full text-white ">
+                <h1 class="text-3xl font-semibold capitalize mb-3" x-text="packet.name_plan"></h1>
+                <p class="text-xl font-bold" x-text="`${packet.validity} ${packet.validity_unit}`"></p>
+            </div>
+        </div>
+
+        <div class="px-6 mt-10 ">
+            <div class="tabs grid grid-flow-row grid-cols-2 font-semibold mb-6">
+                <a class="tab tab-bordered" :class="tabs == 1 && 'tab-active'" @click="toggle(1)">Detail Paket</a>
+                <a class="tab tab-bordered" :class="tabs == 2 && 'tab-active'" @click="toggle(2)">Cara Pembelian</a>
+            </div>
+
+            <table class="table bg-white rounded-md shadow table-lg" :class="tabs != 1 && 'hidden'">
+                <thead class=" text-slate-500">
+                    <tr>
+                        <td>Masa Aktif</td>
+                        <td>:</td>
+                        <td x-text="`${packet.validity} ${packet.validity_unit}`"></td>
+                    </tr>
+                    <tr>
+                        <td>Shared</td>
+                        <td>:</td>
+                        <td x-text="packet.shared_users"></td>
+                    </tr>
+                    <tr>
+                        <td>Kuota</td>
+                        <td>:</td>
+                        <td x-text="packet.typebp"></td>
+                    </tr>
+                    <tr>
+                        <td>Upload</td>
+                        <td>:</td>
+                        <td x-text="`${packet.rate_up} ${packet.rate_up_unit}`"></td>
+                    </tr>
+                    <tr>
+                        <td>Download</td>
+                        <td>:</td>
+                        <td x-text="`${packet.rate_down} ${packet.rate_down_unit}`"></td>
+                    </tr>
+                </thead>
+            </table>
+
+            <div class="card bg-white rounded-lg shadow" :class="tabs != 2 && 'hidden'">
+                <div class="card-body p-5" x-html="info">
+
+                </div>
+            </div>
+
+            <div class="mt-5 pb-10">
+                <button class="btn btn-outline btn-block" @click="window.location.href = 'index.html'">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function request(params) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            if (urlParams.has(params)) {
+                return urlParams.get(params)
+            } else {
+                return false;
+            }
+
+        }
+
+
+        function order() {
+            return {
+                loading: false,
+                packet: {},
+                info: '',
+                tabs: 1,
+                toggle(tab) {
+                    this.tabs = tab
+                },
+                init() {
+                    const params = request('packet_id');
+                    if (!params) {
+                        window.location.href = '/src/index.html'
+                    }
+
+                    this.fetchDetail(params);
+
+                },
+                fetchDetail(id) {
+                    this.loading = true
+                    fetch(config.backend + '/api/v1/index.php?id=' + id).then((r) => r.json()).then((res) => {
+                        if (res.success) {
+                            this.loading = false
+                            this.packet = res.data
+                            this.info = res.register_info
+                        } else {
+                            window.location.href = '/src/index.html'
+                        }
+                    })
+
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

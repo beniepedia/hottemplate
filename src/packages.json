@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Paket Bulanan",
+    "quota": "Unlimited",
+    "active": "30 Hari",
+    "price": "100.000",
+    "bandwith": {
+      "up": "2",
+      "down": "2"
+    },
+    "shared": 1
+  },
+  {
+    "id": 2,
+    "name": "Paket Mingguan",
+    "quota": "Unlimited",
+    "active": "7 Hari",
+    "price": "50.000",
+    "bandwith": {
+      "up": "2",
+      "down": "2"
+    },
+    "shared": 1
+  },
+  {
+    "id": 3,
+    "name": "Paket 2 hari",
+    "quota": "Unlimited",
+    "active": "7 Hari",
+    "price": "50.000",
+    "bandwith": {
+      "up": "2",
+      "down": "2"
+    },
+    "shared": 1
+  },
+  {
+    "id": 4,
+    "name": "Paket 2 hari",
+    "quota": "Unlimited",
+    "active": "7 Hari",
+    "price": "50.000",
+    "bandwith": {
+      "up": "2",
+      "down": "2"
+    },
+    "shared": 1
+  }
+]

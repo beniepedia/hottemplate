@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BGD - NET</title>
+
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="/build/output.css">
+
+  <script src="//unpkg.com/alpinejs" defer></script>
+</head>
+
+<body class="antialiased" x-data="app">
+  <div class="h-dvh container">
+    <div class="px-6 h-full flex  justify-center">
+      <div class="grid grid-flow-row col-span-3 h-full max-w-xl ">
+        <div class="flex justify-center items-center ">
+          <img src="./img/background.png" class="w-[70%]" alt="bg">
+        </div>
+
+        <div class="text-center mb-9">
+          <h1
+            class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-purple-400 to-rose-600 mb-3 drop-shadow">
+            BGD NET
+          </h1>
+          <span class="text-slate-600">Solusi internet murah rumahan dengan koneksi WIFI</span>
+        </div>
+
+        <div class="flex justify-center flex-col">
+          <button class="btn w-full btn-primary text-white shadow" onclick="modal_login.showModal()">
+            <span class="material-symbols-outlined ">
+              fingerprint
+            </span>
+            Login
+          </button>
+          <div class="divider text-slate-600 text-sm">Atau masuk dengan</div>
+          <button class="btn btn-warning w-full shadow">QR CODE</button>
+
+          <!-- voucer -->
+          <div class="flex justify-evenly py-9 text-primary">
+
+            <div class="flex flex-col text-center btn btn-ghost" x-on:click="modal_paket.showModal()">
+              <span class="material-symbols-outlined text-3xl ">
+                package
+              </span>
+              <span class="text-sm">Harga Paket</span>
+            </div>
+            <div class="flex flex-col text-center btn btn-ghost">
+              <span class="material-symbols-outlined text-3xl">
+                live_help
+              </span>
+              <span class="text-sm">Bantuan</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <dialog id="modal_login" class="modal absolute  modal-bottom sm:modal-middle ">
+    <div class="modal-box bg-[url('/src/img/pattern.jpg')] bg-contain">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          <span class="material-symbols-outlined">
+            close
+          </span>
+        </button>
+      </form>
+
+      <div class=" mb-6  text-md text-slate-900">
+        <div class=" flex justify-center ">
+          <img src="./img/side-img.svg" alt="" class="w-56">
+        </div>
+        <h5>Pastikan kamu sudah membeli paket / voucher <span class="font-extrabold">WIFI BGD@NET</span> ya, agar
+          bisa menggunakan internet!</h5>
+      </div>
+
+      <div role="tablist" class="tabs tabs-boxed tabs-md p-1 border-2">
+        <a role="tab" class="tab" :class="!isMember && 'tab-active '" x-on:click="isMember = false">
+          <span class="material-symbols-outlined pr-2">
+            pin_invoke
+          </span>
+          Voucher
+        </a>
+        <a role="tab" class="tab" :class="isMember && 'tab-active'" x-on:click="isMember = true">
+          <span class="material-symbols-outlined pr-2">
+            card_membership
+          </span>
+          Member
+        </a>
+      </div>
+
+      <div class="py-7">
+        <div x-show="!isMember" x-transition>
+          <input type="text" class="form-control" placeholder="Masukkan kode voucher">
+        </div>
+
+        <div x-show="isMember" class="space-y-5" x-transition>
+          <input type="text" class="form-control" placeholder="Masukkan username">
+          <input type="password" class="form-control" placeholder="Masukkan password">
+        </div>
+
+        <button class="btn btn-primary text-white w-full mt-10 shadow">
+          <span class="material-symbols-outlined">
+            verified_user
+          </span>
+          Verifikasi
+
+        </button>
+      </div>
+
+    </div>
+  </dialog>
+
+  <dialog id="modal_paket" class="modal absolute  modal-bottom sm:modal-middle ">
+
+    <div class="modal-box">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          <span class="material-symbols-outlined">
+            close
+          </span>
+        </button>
+      </form>
+
+      <h3 class="font-bold text-xl mb-6">Harga Paket!</h3>
+
+      <div class="flex flex-col gap-6">
+        <template x-for="package in packages" :key="package.id">
+          <div class="voucher">
+            <div class="absolute right-3 ">
+              <span class="material-symbols-outlined opacity-10 text-[6rem]">
+                style
+              </span>
+            </div>
+            <div class="voucher-title" x-text="package.name"></div>
+            <div class="voucher-body">
+              <div class="flex justify-between items-end">
+                <div class=" text-slate-700">
+                  <h1>Masa Aktif</h1>
+                  <span class="text-2xl font-semibold" x-text="package.active"></span>
+                </div>
+                <h2 class="text-2xl text-slate-700 font-semibold z-10" x-text="'IDR '+package.price"></h2>
+              </div>
+              <div class="divider my-1 z-10"></div>
+              <ul class="list-none space-y-2 text-[15px]">
+                <li class="flex gap-2">
+                  <span class="material-symbols-outlined text-[20px]">
+                    devices
+                  </span>
+                  <span class="font-semibold">Share</span> : 1 perangkat
+                </li>
+                <li class="flex  gap-2">
+                  <span class="material-symbols-outlined text-[20px]">
+                    cloud_upload
+                  </span>
+                  <span class="font-semibold">Up/Down</span> : 5Mbps/10Mbps
+                </li>
+              </ul>
+
+              <button class="btn btn-primary text-white btn-sm btn-block mt-4">
+                <span class="material-symbols-outlined text-md">
+                  add_shopping_cart
+                </span>
+                Beli Paket
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
