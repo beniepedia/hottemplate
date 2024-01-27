@@ -4,72 +4,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment</title>
+  <title>Pembayaran</title>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <link rel="stylesheet" href="/build/output.css">
   <script src="//unpkg.com/alpinejs" defer></script>
+
 </head>
 
-<body class="antialiased" x-data="payments">
-  <div class="h-dvh container md:flex justify-center">
-    <div class="w-full md:w-1/3 p-6 h-full">
-      <div class="flex flex-col h-full">
-        <div class="flex-1">
-          <div x-show="steps == 0">
+<body class="antialiased text-slate-600" x-data="payment">
+  <form x-on:submit.prevent="submit()" action="">
+    <div class="min-h-screen  flex flex-col items-center">
+      <div class="md:max-w-sm w-full h-full pt-6">
+        <div class="flex flex-col h-full">
+          <div class="flex-1 px-6 md:px0">
+            <h1 class="text-xl font-bold flex items-center gap-x-3">
+              <span class="material-symbols-outlined text-3xl">
+                shopping_cart
+              </span>
+              PEMBAYARAN
+            </h1>
 
-            <h1 class="text-xl font-semibold">Masukkan nomor HP</h1>
-            <h5 class="mb-4">Nomor HP harus yang masih aktif ya!</h5>
-            <input type="number" minlength="8" class="form-control text-xl font-semibold mb-1 "
-              placeholder="08xx-xxxx-xxxx" x-model="data.phone">
+            <div x-cloak x-show="!pay">
+              <h2 class="mt-7 font-semibold mb-4 capitalize text-cyan-700">Detail Pesanan</h2>
+              <div class="border-2 rounded-md border-white bg-base-100 shadow">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th>Paket</th>
+                      <th align="right" class="capitalize" x-text="package.name"></th>
+                    </tr>
+                    <tr>
+                      <th>Masa Aktif</th>
+                      <th align="right" x-text="package.active"></th>
+                    </tr>
+                    <tr>
+                      <th>Kuota</th>
+                      <th align="right" x-text="package.quota"></th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-          </div>
+              <h2 class="mt-7 font-semibold capitalize mb-4 text-cyan-700">Detail Pelanggan</h2>
 
-          <div x-cloak x-show="steps == 1">
-            <h1 class="text-xl font-semibold">Verifikasi !</h1>
-            <h5 class="mb-4">Masukkan 4 digit kode yang kami kirim pada sms kamu.</h5>
-            <div class="grid grid-flow-col gap-6 four_otp">
-              <input type="number" maxlength="1" class="form-control text-center text-2xl font-extrabold ">
-              <input type="number" maxlength="1" class="form-control text-center text-2xl font-extrabold " readonly>
-              <input type="number" maxlength="1" class="form-control text-center text-2xl font-extrabold" readonly>
-              <input type="number" maxlength="1" class="form-control text-center text-2xl font-extrabold" readonly>
+              <div class="space-y-3">
+                <div>
+                  <input type="text" x-model="data.name" class="form-control shadow" placeholder="Masukkan nama"
+                    readonly>
+                </div>
+                <div>
+                  <input type="email" x-model="data.email" class="form-control shadow" placeholder="Masukkan email"
+                    readonly>
+                </div>
+              </div>
+
+              <div
+                class="bg-yellow-300 border-t-4 shadow border-yellow-500 text-slate-700 rounded-lg p-4 text-center text-xl mt-4 ">
+                <p class="text-sm font-bold text-slate-600">Jumlah Bayar</p>
+                <span class="font-bold">IDR 100.000</span>
+              </div>
+
+              <div class="mt-5 mb-3 font-semibold text-cyan-700 capitalize">Metode Pembayaran</div>
+              <template x-for="payment in paymentlist">
+                <div class="bg-white rounded-md shadow p-3 flex gap-7 items-center mb-3 cursor-pointer" :key="payment"
+                  x-on:click="data.channel = payment.code">
+                  <div class="flex items-center gap-3">
+                    <input type="radio" name="channel" class="radio radio-sm" x-model="data.payment_method"
+                      :value="payment.code" />
+                    <img :src="payment.icon_url" width="80" alt="icon">
+                  </div>
+                  <div x-text="payment.name"></div>
+                </div>
+              </template>
+
+              <div class="py-10 md:py-0"></div>
+              <div class="fixed md:relative lg:block pt-0 md:py-4 bottom-0 right-0 left-0">
+                <button type="submit"
+                  class="btn btn-success rounded-none md:rounded-md shadow md:btn-md  h-[55px] text-white btn-block "
+                  :disabled="loading">
+                  <div class="flex items-center gap-3" x-show="!loading">
+                    <span class="material-symbols-outlined text-3xl">
+                      payments
+                    </span>
+                    BAYAR
+                  </div>
+                  <div x-cloak class="flex items-center gap-3" x-show="loading">
+                    <span class="loading loading-spinner"></span>
+                    Please wait ...
+                  </div>
+                </button>
+              </div>
             </div>
 
-            <div class="text-center mt-20 space-y-4">
-              <h3>Tidak menerima kode ?</h3>
+            <!-- Halaman Bayar -->
+            <template x-if="pay">
+              <div>
+                <table class="table table-sm rounded-md shadow bg-white/90 mt-5">
+                  <tbody class="font-medium text-slate-800">
+                    <tr>
+                      <td>#ID Transaksi</td>
+                      <td align="right">234423432423</td>
+                    </tr>
+                    <tr>
+                      <td>Tgl Transaksi</td>
+                      <td align="right">28/12/2024 13:00:00</td>
+                    </tr>
+                    <tr>
+                      <td>Metode Bayar</td>
+                      <td align="right" x-text="pay.payment_name"></td>
+                    </tr>
+                  </tbody>
+                </table>
 
-              <button class="btn btn-active shadow no-animation disabled:bg-slate-100 disabled:text-slate-600"
-                x-bind:disabled="timer" x-on:click="startTimer()">Kirim ulang
-                <span x-text="timer"></span></button>
-            </div>
+
+                <div class="p-8 bg-white/80 rounded-md shadow mt-6 ">
+                  <a href="https://tripay.co.id/qr/DEV-T1871013909788MJG" class="flex flex-col items-center">
+                    <img src="https://tripay.co.id/qr/DEV-T1871013909788MJG" alt="qrcode" class="shadow-md" width="70%">
+                  </a>
+                  <div class="mt-3 text-center">
+                    <p class="font-bold text-primary">SCAN DISINI</p>
+
+                  </div>
+                  <div class="divider mb-1"></div>
+                  <div class="text-sm italic">* Support semua pembayaran E-Wallet. Cth : Dana, Link, Shoppe, Gopay
+                    menggunakan
+                    QRIS.
+                  </div>
+                </div>
+
+                <div
+                  class="bg-green-400 text-green-900 mt-6 rounded-md shadow p-4 text-center border-t-4 border-green-700 relative">
+                  <p class="text-sm font-medium ">
+                    Kode Virtual Account
+                  </p>
+                  <p class="text-lg font-medium" x-ref="va" x-text="pay.pay_code"></p>
+                  <span class="material-symbols-outlined absolute top-3 right-3 text-2xl cursor-pointer"
+                    x-on:click="copyClipboard()">content_paste</span>
+                </div>
+
+                <div
+                  class="bg-amber-300/90 text-amber-900 mt-6 rounded-md shadow p-4 justify-center border-t-4 border-amber-700 flex gap-6 items-center">
+                  <span class="material-symbols-outlined text-5xl">
+                    timer
+                  </span>
+                  <p class="text-sm">Segera Lakukan pembayaran sebesar <b x-text="currency(pay.amount)"></b> sebelum
+                    tanggal
+                    <b x-text="format_date(pay.expired_time)"></b>
+                  </p>
+                </div>
+
+
+                <div class="space-y-3 mt-7">
+
+                  <h3 class="font-semibold text-cyan-700 capitalize">Petunjuk Cara Bayar</h3>
+                  <template x-for="(p, index) in pay.instructions" :key="index">
+                    <div class="collapse collapse-arrow bg-base-200/80 shadow rounded-md">
+                      <input type="radio" name="my-accordion-2" />
+                      <div class="collapse-title text-sm font-semibold" x-text="p.title"></div>
+                      <div class="collapse-content text-sm">
+                        <!-- <p x-html="p.steps"></p> -->
+                        <ul class="list-decimal list-inside">
+                          <template x-for="step in p.steps">
+                            <li x-html="step" class="list-item"></li>
+                          </template>
+                        </ul>
+                      </div>
+                    </div>
+                  </template>
+
+                </div>
+
+                <div class="mt-5 space-y-3">
+                  <button class="btn btn-success text-white btn-block rounded-md shadow">Cek Status Transaksi</button>
+                  <button class="btn btn-block rounded-md shadow">Kembali</button>
+                </div>
+
+                <div class="py-4"></div>
+              </div>
+            </template>
           </div>
-
-
-          <!-- <div x-cloak x-show="steps == 1">
-            <h1 class="text-xl font-semibold mb-4">Masukkan nama kamu!</h1>
-    
-            <input type="text" class="form-control text-xl font-semibold" placeholder="Jhon Doe" x-model="data.name">
-
-          </div> -->
         </div>
-        <div class="flex gap-3 ">
-          <button class="btn btn-circle shadow" x-on:click="back()">
-            <span class="material-symbols-outlined">
-              arrow_back_ios_new
-            </span>
-          </button>
-          <button type="button" class="btn shadow btn-primary text-white flex-1" x-on:click="next()">
-            Lanjut
-            <span class="material-symbols-outlined">
-              arrow_forward_ios
-            </span>
-          </button>
-        </div>
+
+
       </div>
-    </div>
-  </div>
 
-  <script src="script.js"></script>
+    </div>
+  </form>
+  <script src="https://app-sandbox.duitku.com/lib/js/duitku.js"></script>
+  <script src="js/func.js"></script>
+  <script src="js/payment.js"></script>
 </body>
 
 </html>

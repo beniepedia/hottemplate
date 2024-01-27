@@ -14,8 +14,8 @@
 </head>
 
 <body class="antialiased" x-data="app">
-  <div class="h-dvh container">
-    <div class="px-6 h-full flex  justify-center">
+  <div class="min-h-screen">
+    <div class="px-6 h-full flex justify-center">
       <div class="grid grid-flow-row col-span-3 h-full max-w-xl ">
         <div class="flex justify-center items-center ">
           <img src="./img/background.png" class="w-[70%]" alt="bg">
@@ -29,7 +29,7 @@
           <span class="text-slate-600">Solusi internet murah rumahan dengan koneksi WIFI</span>
         </div>
 
-        <div class="flex justify-center flex-col">
+        <div class="flex justify-center flex-col ">
           <button class="btn w-full btn-primary text-white shadow" onclick="modal_login.showModal()">
             <span class="material-symbols-outlined ">
               fingerprint
@@ -40,7 +40,7 @@
           <button class="btn btn-warning w-full shadow">QR CODE</button>
 
           <!-- voucer -->
-          <div class="flex justify-evenly py-9 text-primary">
+          <div class="flex justify-evenly text-primary py-9">
 
             <div class="flex flex-col text-center btn btn-ghost" x-on:click="modal_paket.showModal()">
               <span class="material-symbols-outlined text-3xl ">
@@ -55,6 +55,7 @@
               <span class="text-sm">Bantuan</span>
             </div>
           </div>
+
         </div>
 
       </div>
@@ -62,7 +63,7 @@
 
   </div>
 
-  <dialog id="modal_login" class="modal absolute  modal-bottom sm:modal-middle ">
+  <dialog id="modal_login" class="modal fixed  modal-bottom sm:modal-middle ">
     <div class="modal-box bg-[url('/src/img/pattern.jpg')] bg-contain">
       <form method="dialog">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -117,7 +118,7 @@
     </div>
   </dialog>
 
-  <dialog id="modal_paket" class="modal absolute  modal-bottom sm:modal-middle ">
+  <dialog id="modal_paket" class="modal   modal-bottom sm:modal-middle ">
 
     <div class="modal-box">
       <form method="dialog">
@@ -163,7 +164,7 @@
                 </li>
               </ul>
 
-              <button class="btn btn-primary text-white btn-sm btn-block mt-4">
+              <button class="btn btn-primary text-white btn-sm btn-block mt-4" x-on:click="buy_package(package.id)">
                 <span class="material-symbols-outlined text-md">
                   add_shopping_cart
                 </span>
@@ -176,7 +177,8 @@
     </div>
   </dialog>
 
-  <script src="script.js"></script>
+  <script src="js/func.js"></script>
+  <script src="js/login.js"></script>
 
 </body>
 
